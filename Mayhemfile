@@ -1,0 +1,5 @@
+project: rnshah9/mayhem-peg-markdown
+target: markdown
+
+cmds:
+  - cmd: /repo/markdown @@
