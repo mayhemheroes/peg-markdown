@@ -2,4 +2,4 @@ project: peg-markdown
 target: markdown
 
 cmds:
-  - cmd: /repo/markdown @@
+  - cmd: /markdown @@
