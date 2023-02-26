@@ -6,7 +6,7 @@
 
 extern "C"
 {
-#include "utility_functions.h"
+#include "wrapper.h"
 #include "markdown_peg.h"
 }
 
@@ -16,7 +16,7 @@ extern "C" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
 
     char *string = strdup(provider.ConsumeRandomLengthString(1000).c_str());
 
-    element* e = mk_str(string);
+    element *e = mk_str(string);
 
     free_element(e);
     free(string);
