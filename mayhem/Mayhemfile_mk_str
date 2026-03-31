@@ -1,0 +1,6 @@
+project: peg-markdown
+target: mk-str
+
+cmds:
+  - cmd: /fuzz_mk_str
+    libfuzzer: true

@@ -1,0 +1,5 @@
+project: peg-markdown
+target: markdown
+
+cmds:
+  - cmd: /markdown @@
