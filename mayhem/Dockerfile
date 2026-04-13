@@ -5,7 +5,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y build-essential libglib2.0
 
 COPY . /repo
 WORKDIR /repo
-RUN make -j8
+RUN touch peg-0.1.9/leg.c && make -j8
 RUN  clang++ /repo/mayhem/fuzz_mk_str.cpp -fsanitize=fuzzer,address /repo/libpeg-markdown.a -lglib-2.0 -o /fuzz -I /repo/ -I /usr/include/glib-2.0/ -I /usr/lib/x86_64-linux-gnu/glib-2.0/include/ -o /fuzz
 
 FROM ubuntu:20.04 as package

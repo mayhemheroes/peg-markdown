@@ -1,8 +1,5 @@
 name: Mayhem
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch, workflow_call]
 
 env:
   REGISTRY: ghcr.io
@@ -20,14 +17,15 @@ jobs:
         include:
         - os: ubuntu-latest
           triplet: x64-linux
-
+    outputs:
+      image: ${{ steps.meta.outputs.tags }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
       with:
         submodules: recursive
 
     - name: Log in to the Container registry
-      uses: docker/login-action@v2.1.0
+      uses: docker/login-action@v4
       with:
         registry: ${{ env.REGISTRY }}
         username: ${{ github.actor }}
@@ -35,12 +33,15 @@ jobs:
 
     - name: Extract metadata (tags, labels) for Docker
       id: meta
-      uses: docker/metadata-action@v4.1.1
+      uses: docker/metadata-action@v6
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v4
+
     - name: Build and push Docker image
-      uses: docker/build-push-action@v3.2.0
+      uses: docker/build-push-action@v7
       with:
         context: .
         push: true
@@ -48,10 +49,7 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
 
-    outputs:
-      image: ${{ steps.meta.outputs.tags }}
-
-  mayhem:
+  analyze:
     needs: build
     name: 'fuzz ${{ matrix.mayhemfile }}'
     runs-on: ubuntu-latest
@@ -61,13 +59,11 @@ jobs:
         mayhemfile:
         - mayhem/Mayhemfile_mk_str
         - mayhem/Mayhemfile_markdown
-
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Start analysis for ${{ matrix.mayhemfile }}
       uses: forallsecure/mcode-action@long-runs
       with:
         mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
-        args: --image ${{ needs.build.outputs.image }} --file ${{ 
-          matrix.mayhemfile }} --duration 300
+        args: --image ${{ needs.build.outputs.image }} --file ${{ matrix.mayhemfile }} --duration 300
