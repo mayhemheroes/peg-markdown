@@ -1,0 +1,14 @@
+project: peg-markdown
+target: markdown
+# In-process libFuzzer harness over the full PEG parser + every HTML/LaTeX/groff/ODF
+# writer (markdown_to_string) — the same code path the `markdown` CLI drove, but
+# instrumented so Mayhem actually accrues edges (the raw file-input CLI reported 0).
+# Two-entry testsuite keeps BOTH the server-accumulated corpus and the git-tracked
+# starter seeds (relative file:// path, resolved against the CI checkout).
+# mayhem-lint: keep-testsuite
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/markdown/testsuite
+cmds:
+  - cmd: /mayhem/markdown
+    libfuzzer: true
