@@ -1,0 +1,9 @@
+project: peg-markdown
+target: mk-str
+# mayhem-lint: keep-testsuite
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/mk-str/testsuite
+cmds:
+  - cmd: /mayhem/fuzz_mk_str
+    libfuzzer: true
